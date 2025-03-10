@@ -64,6 +64,9 @@ const matchers: Record<SchemaType, (schema: JSONSchema) => boolean> = {
   NAMED_ENUM(schema) {
     return 'enum' in schema && 'tsEnumNames' in schema
   },
+  DEPENDENCY(schema) {
+    return 'dependencies' in schema
+  },
   NAMED_SCHEMA(schema) {
     // 8.2.1. The presence of "$id" in a subschema indicates that the subschema constitutes a distinct schema resource within a single schema document.
     return '$id' in schema && ('patternProperties' in schema || 'properties' in schema)
@@ -140,8 +143,8 @@ const matchers: Record<SchemaType, (schema: JSONSchema) => boolean> = {
     }
     return 'enum' in schema
   },
-  UNNAMED_SCHEMA() {
-    return false // Explicitly handled as the default case
+  UNNAMED_SCHEMA(schema) {
+    return 'properties' in schema && !('$id' in schema) // Explicitly handled as the default case
   },
   UNTYPED_ARRAY(schema) {
     return schema.type === 'array' && !('items' in schema)

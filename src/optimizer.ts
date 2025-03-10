@@ -16,6 +16,7 @@ export function optimize(ast: AST, options: Options, processed = new Set<AST>())
       return Object.assign(ast, {
         params: optimize(ast.params, options, processed),
       })
+    case 'DEPENDENCY':
     case 'INTERFACE':
       return Object.assign(ast, {
         params: ast.params.map(_ => Object.assign(_, {ast: optimize(_.ast, options, processed)})),

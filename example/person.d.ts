@@ -5,13 +5,161 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * The version property allows the JSONata migration script to perform a rules update when required
+ */
+export type VersionOfTheCurrentSchema = "4.0.0";
+/**
+ * This interface was referenced by `Person`'s JSON-Schema
+ * via the `definition` "action".
+ */
+export type Action = Action1 & {
+  key: string;
+  name: string;
+  condition?: string;
+  actionType: "tieredRewardsAndEmail" | "rewardAndEmail" | "email" | "exchangeReward" | "retraction";
+};
+export type Action1 =
+  | {
+      audience: Audience;
+      actionType?: "tieredRewardsAndEmail";
+      /**
+       * @maxItems 100
+       */
+      rewardTiers: RewardTier[];
+      overrideEmailKey?: string;
+    }
+  | {
+      reward: Reward;
+      audience: Audience;
+      actionType?: "rewardAndEmail";
+      overrideEmailKey?: string;
+      overrideRewardKey?: string;
+    }
+  | {
+      audience: Audience;
+      actionType?: "email";
+      overrideEmailKey?: string;
+    }
+  | ((
+      | {
+          subType?: "rewards";
+          /**
+           * @maxItems 100
+           */
+          retractedRewardKeys: string[];
+        }
+      | {
+          subType?: "referral" | "conversion";
+        }
+      | {
+          subType?: "event";
+          sourceEventKey: string;
+          sourceEventFilter: string;
+        }
+    ) & {
+      subType: "rewards" | "referral" | "event" | "conversion";
+      actionType?: "retraction";
+    })
+  | {
+      audience: Audience;
+      actionType?: "exchangeReward";
+      sourceUnit: string;
+      sourceValue: string;
+      repeatExchange: "no-repeat" | "repeat-max";
+      globalRewardKey: string;
+    };
+/**
+ * This interface was referenced by `Person`'s JSON-Schema
+ * via the `definition` "audience".
+ */
+export type Audience = "referrer" | "referred";
+/**
+ * This interface was referenced by `Person`'s JSON-Schema
+ * via the `definition` "reward".
+ */
+export type Reward = Reward1 & {
+  expiryDate?: string;
+  rewardType: "static" | "dynamic";
+  pendingPeriod?: string;
+};
+export type Reward1 =
+  | {
+      rewardType?: "static";
+    }
+  | {
+      unit: string;
+      value: string;
+      rewardType?: "dynamic";
+    };
+export type ShouldAReferredUserMeetingThisObjectiveSConditionConvertTheReferral = false | true;
+/**
+ * This interface was referenced by `Person`'s JSON-Schema
+ * via the `definition` "rewardLimit".
+ */
+export type RewardLimit = RewardLimit1 & {
+  limitType: "unlimited" | "limited";
+};
+export type RewardLimit1 =
+  | {
+      limitType?: "unlimited";
+    }
+  | {
+      limitType?: "limited";
+      maxRewards: number;
+      overrideEmailKey?: string;
+    };
+
 export interface Person {
-  firstName: string
-  lastName: string
+  version?: VersionOfTheCurrentSchema;
+  conversionRule?: ConversionRules;
+}
+export interface ConversionRules {
   /**
-   * Age in years
+   * @minItems 1
+   * @maxItems 100
    */
-  age?: number
-  hairColor?: 'black' | 'brown' | 'blue'
-  [k: string]: unknown
+  objectives: [Objective, ...Objective[]];
+}
+/**
+ * This interface was referenced by `Person`'s JSON-Schema
+ * via the `definition` "objective".
+ */
+export interface Objective {
+  key: string;
+  name: string;
+  /**
+   * @maxItems 100
+   */
+  actions?: Action[];
+  trigger: (
+    | {
+        eventKey: string;
+        condition?: string;
+        triggerType?: "eventTrigger";
+      }
+    | {
+        condition?: string;
+        edgeFields?: string[];
+        triggerType?: "criteriaTrigger";
+      }
+    | {
+        condition?: string;
+        triggerType?: "referralTrigger";
+      }
+  ) & {
+    triggerType: "eventTrigger" | "criteriaTrigger" | "referralTrigger";
+  };
+  performsConversion: ShouldAReferredUserMeetingThisObjectiveSConditionConvertTheReferral;
+  referrerProgramRewardLimit?: RewardLimit;
+}
+/**
+ * This interface was referenced by `Person`'s JSON-Schema
+ * via the `definition` "rewardTier".
+ */
+export interface RewardTier {
+  key: string;
+  reward: Reward;
+  condition: string;
+  overrideRewardKey?: string;
 }

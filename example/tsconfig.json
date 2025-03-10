@@ -2,7 +2,9 @@
   "compilerOptions": {
     "declaration": false,
     "lib": [
-      "es2015"
+    "es2020",
+    "dom",
+    "dom.iterable"
     ],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -14,7 +16,8 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "strictNullChecks": true,
-    "target": "es2016"
+    "target": "es2016",
+    "types": ["node"]
   },
   "files": [
     "./index.ts"

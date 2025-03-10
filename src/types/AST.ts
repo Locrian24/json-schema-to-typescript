@@ -7,6 +7,8 @@ export type AST =
   | TArray
   | TBoolean
   | TEnum
+  | TDependency
+  | TNamedDependency
   | TInterface
   | TNamedInterface
   | TIntersection
@@ -72,8 +74,20 @@ export interface TEnumParam {
   keyName: string
 }
 
+export interface TDependency extends AbstractAST {
+  type: 'DEPENDENCY'
+  params: TInterfaceParam[]
+  superTypes: TNamedInterface[]
+}
+
 export interface TInterface extends AbstractAST {
   type: 'INTERFACE'
+  params: TInterfaceParam[]
+  superTypes: TNamedInterface[]
+}
+
+export interface TNamedDependency extends AbstractAST {
+  type: 'DEPENDENCY'
   params: TInterfaceParam[]
   superTypes: TNamedInterface[]
 }

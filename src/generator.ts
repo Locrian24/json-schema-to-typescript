@@ -13,6 +13,7 @@ import {
   TNamedInterface,
   TUnion,
   T_UNKNOWN,
+  TDependency,
 } from './types/AST'
 import {log, toSafeString} from './utils'
 
@@ -51,6 +52,7 @@ function declareEnums(ast: AST, options: Options, processed = new Set<AST>()): s
         type += declareEnums(ast.spreadParam, options, processed)
       }
       return type
+    case 'DEPENDENCY':
     case 'INTERFACE':
       return getSuperTypesAndParams(ast).reduce((prev, ast) => prev + declareEnums(ast, options, processed), '')
     default:
@@ -70,6 +72,7 @@ function declareNamedInterfaces(ast: AST, options: Options, rootASTName: string,
     case 'ARRAY':
       type = declareNamedInterfaces((ast as TArray).params, options, rootASTName, processed)
       break
+    case 'DEPENDENCY':
     case 'INTERFACE':
       type = [
         hasStandaloneName(ast) &&
@@ -118,6 +121,7 @@ function declareNamedTypes(ast: AST, options: Options, rootASTName: string, proc
         .join('\n')
     case 'ENUM':
       return ''
+    case 'DEPENDENCY':
     case 'INTERFACE':
       return getSuperTypesAndParams(ast)
         .map(
@@ -379,6 +383,6 @@ function escapeKeyName(keyName: string): string {
   return JSON.stringify(keyName)
 }
 
-function getSuperTypesAndParams(ast: TInterface): AST[] {
+function getSuperTypesAndParams(ast: TInterface | TDependency): AST[] {
   return ast.params.map(param => param.ast).concat(ast.superTypes)
 }

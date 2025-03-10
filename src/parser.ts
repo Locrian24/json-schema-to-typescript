@@ -178,6 +178,15 @@ function parseNonLiteral(
         })),
         type: 'ENUM',
       }
+    case 'DEPENDENCY':
+      return {
+        comment: schema.description,
+        deprecated: schema.deprecated,
+        keyName,
+        standaloneName: standaloneName(schema, keyNameFromDefinition, usedNames, options),
+        params: map(schema.dependencies, _ => parse(_, options, undefined, processed, usedNames)),
+        type: 'INTERSECTION',
+      }
     case 'NAMED_SCHEMA':
       return newInterface(schema as SchemaSchema, options, processed, usedNames, keyName)
     case 'NEVER':
