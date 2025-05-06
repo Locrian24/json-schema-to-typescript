@@ -87,6 +87,7 @@ export interface TInterface extends AbstractAST {
 }
 
 export interface TNamedDependency extends AbstractAST {
+  standaloneName: string
   type: 'DEPENDENCY'
   params: TInterfaceParam[]
   superTypes: TNamedInterface[]

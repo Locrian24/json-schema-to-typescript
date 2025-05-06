@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Predefined Reward",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "key": {
+      "type": "string",
+      "title": "Key"
+    },
+    "rewardType": {
+      "type": "string",
+      "enum": ["PCT_DISCOUNT", "CREDIT", "FUELTANK", "INTEGRATION"]
+    },
+    "rewardConfigType": {
+      "type": "string",
+      "enum": ["globalRewardSetup", "programRewardSetup"],
+      "default": "globalRewardSetup"
+    }
+  },
+  "required": ["rewardConfigType"],
+  "dependencies": {
+    "rewardConfigType": {
+      "oneOf": [
+        {
+          "properties": {
+            "rewardConfigType": {
+              "enum": ["globalRewardSetup"]
+            },
+            "globalRewardKey": {
+              "title": "Pick a Global Reward",
+              "type": "string"
+            }
+          },
+          "required": ["globalRewardKey"]
+        },
+        {
+          "properties": {
+            "rewardConfigType": {
+              "enum": ["programRewardSetup"]
+            },
+            "rewardType": {
+              "type": "string",
+              "enum": ["PCT_DISCOUNT", "CREDIT", "FUELTANK", "INTEGRATION"]
+            }
+          },
+          "required": ["rewardType"]
+        }
+      ]
+    },
+    "rewardType": {
+      "oneOf": [
+        {
+          "properties": {
+            "rewardType": {
+              "enum": ["PCT_DISCOUNT"]
+            },
+            "amount": {
+              "title": "Discount Percent",
+              "type": "integer"
+            },
+            "validityDuration": {
+              "$ref": "#/definitions/reward/definitions/validityDuration"
+            },
+            "pendingDuration": {
+              "$ref": "#/definitions/reward/definitions/pendingDuration"
+            }
+          },
+          "required": ["amount"]
+        },
+        {
+          "properties": {
+            "rewardType": {
+              "enum": ["CREDIT"]
+            },
+            "amount": {
+              "title": "Credit Amount",
+              "type": "integer"
+            },
+            "unit": {
+              "type": "string",
+              "title": "Reward Unit"
+            },
+            "validityDuration": {
+              "$ref": "#/definitions/reward/definitions/validityDuration"
+            },
+            "pendingDuration": {
+              "$ref": "#/definitions/reward/definitions/pendingDuration"
+            }
+          },
+          "required": ["amount", "unit"]
+        },
+        {
+          "properties": {
+            "rewardType": {
+              "enum": ["FUELTANK"]
+            },
+            "fuelTankType": {
+              "type": "string",
+              "title": "Reward Type",
+              "enum": ["PCT_DISCOUNT", "CREDIT"]
+            },
+            "validityDuration": {
+              "$ref": "#/definitions/reward/definitions/validityDuration"
+            },
+            "pendingDuration": {
+              "$ref": "#/definitions/reward/definitions/pendingDuration"
+            },
+            "allowsInstantAccess": {
+              "title": "Allow instant access",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "required": ["fuelTankType"],
+          "dependencies": {
+            "fuelTankType": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "fuelTankType": {
+                      "enum": ["PCT_DISCOUNT"]
+                    },
+                    "amount": {
+                      "title": "Discount Percent",
+                      "type": "integer"
+                    },
+                    "validityDuration": {
+                      "$ref": "#/definitions/reward/definitions/validityDuration"
+                    },
+                    "pendingDuration": {
+                      "$ref": "#/definitions/reward/definitions/pendingDuration"
+                    },
+                    "allowsInstantAccess": {
+                      "title": "Allow instant access",
+                      "type": "boolean",
+                      "default": false
+                    }
+                  },
+                  "required": ["amount", "allowsInstantAccess"]
+                },
+                {
+                  "properties": {
+                    "fuelTankType": {
+                      "enum": ["CREDIT"]
+                    },
+                    "amount": {
+                      "title": "Credit Amount",
+                      "type": "integer"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "title": "Reward Unit"
+                    },
+                    "allowsInstantAccess": {
+                      "title": "Allow instant access",
+                      "type": "boolean",
+                      "default": false
+                    }
+                  },
+                  "required": ["amount", "unit", "allowsInstantAccess"]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "rewardType": {
+              "enum": ["INTEGRATION"]
+            },
+            "amount": {
+              "title": "Credit Amount",
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "unit": {
+              "type": "string",
+              "title": "Gift Card Type"
+            },
+            "integrationId": {
+              "type": "string",
+              "title": "Integration Identifier"
+            },
+            "integrationSettings": {
+              "$ref": "#/definitions/reward/definitions/integrationSettings"
+            },
+            "pendingDuration": {
+              "$ref": "#/definitions/reward/definitions/pendingDuration"
+            }
+          },
+          "required": ["amount"]
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "reward": {
+      "definitions": {
+        "validityDuration": {
+          "type": "string",
+          "title": "Duration Reward Is Valid"
+        },
+        "pendingDuration": {
+          "type": "string",
+          "title": "Duration Reward Is Pending"
+        },
+        "integrationSettings": {
+          "type": "object",
+          "title": "Integration Settings",
+          "properties": {
+            "templateId": {
+              "type": "string",
+              "title": "Email Template ID"
+            },
+            "giftId": {
+              "type": "string"
+            },
+            "utid": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

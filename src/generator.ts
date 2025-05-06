@@ -14,6 +14,7 @@ import {
   TUnion,
   T_UNKNOWN,
   TDependency,
+  TNamedDependency,
 } from './types/AST'
 import {log, toSafeString} from './utils'
 
@@ -165,6 +166,7 @@ function generateTypeUnmemoized(ast: AST, options: Options): string {
 }
 export const generateType = memoize(generateTypeUnmemoized)
 
+// @ts-expect-error
 function generateRawType(ast: AST, options: Options): string {
   log('magenta', 'generator', ast)
 
@@ -296,7 +298,7 @@ function generateSetOperation(ast: TIntersection | TUnion, options: Options): st
   return members.length === 1 ? members[0] : '(' + members.join(' ' + separator + ' ') + ')'
 }
 
-function generateInterface(ast: TInterface, options: Options): string {
+function generateInterface(ast: TInterface | TDependency, options: Options): string {
   return (
     `{` +
     '\n' +
@@ -352,7 +354,7 @@ function generateStandaloneEnum(ast: TEnum, options: Options): string {
   )
 }
 
-function generateStandaloneInterface(ast: TNamedInterface, options: Options): string {
+function generateStandaloneInterface(ast: TNamedInterface | TNamedDependency, options: Options): string {
   return (
     (hasComment(ast) ? generateComment(ast.comment, ast.deprecated) + '\n' : '') +
     `export interface ${toSafeString(ast.standaloneName)} ` +

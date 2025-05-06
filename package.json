@@ -1,6 +1,6 @@
 {
-  "name": "json-schema-to-typescript",
-  "version": "15.0.3",
+  "name": "json-schema-to-typescript-with-deps",
+  "version": "0.0.1",
   "description": "compile json schema to typescript typings",
   "main": "dist/src/index.js",
   "bin": {
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcherny/json-schema-to-typescript.git"
+    "url": "git+https://github.com/locrian24/json-schema-to-typescript.git"
   },
   "keywords": [
     "json",
@@ -44,9 +44,9 @@
   "author": "Boris Cherny <boris@borischerny.com> (https://borischerny.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bcherny/json-schema-to-typescript/issues"
+    "url": "https://github.com/locrian24/json-schema-to-typescript/issues"
   },
-  "homepage": "https://github.com/bcherny/json-schema-to-typescript#readme",
+  "homepage": "https://github.com/locrian24/json-schema-to-typescript#readme",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.5.5",
     "@types/json-schema": "^7.0.15",
